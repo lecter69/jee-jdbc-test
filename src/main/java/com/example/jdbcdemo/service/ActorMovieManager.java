@@ -17,9 +17,9 @@ public class ActorMovieManager {
 	private Connection connection;
 
 	private String url = "jdbc:hsqldb:hsql://localhost/workdb";
-	
+
 	private String createTableActorMovie = "CREATE TABLE ActorMovie(actorId bigint, movieId bigint)";
-	
+
 	private PreparedStatement getActorsInMovieStmt;
 	private PreparedStatement getMoviesInActorStmt;
 	private PreparedStatement addActorMovieStmt;
@@ -29,13 +29,13 @@ public class ActorMovieManager {
 	private PreparedStatement getAllActorMoviesStmt;
 
 	private Statement statement;
-	
+
 	public ActorMovieManager() {
 		try {
 			connection = DriverManager.getConnection(url);
-			
+
 			connection.setAutoCommit(false);
-			
+
 			statement = connection.createStatement();
 
 			ResultSet rs = connection.getMetaData().getTables(null, null, null,
@@ -50,19 +50,19 @@ public class ActorMovieManager {
 
 			if (!tableExists)
 				statement.executeUpdate(createTableActorMovie);
-			
+
 			// aktorzy w filmie
 			getActorsInMovieStmt = connection
 					.prepareStatement("SELECT * FROM ActorMovie WHERE movieId = ?");
 			// filmy, w których wystąpił aktor
 			getMoviesInActorStmt = connection
-					.prepareStatement("SELECT * FROM ActorMovie WHERE actorId = ?");				
+					.prepareStatement("SELECT * FROM ActorMovie WHERE actorId = ?");
 			addActorMovieStmt = connection
 					.prepareStatement("INSERT INTO ActorMovie (actorId, movieId) VALUES (?, ?)");
 			getActorMovieStmt = connection
 					.prepareStatement("SELECT * FROM ActorMovie WHERE actorId = ? and movieId = ?");
 			deleteActorMovieStmt = connection
-					.prepareStatement("DELETE FROM ActorMovie WHERE actorId = ? and movieId = ?");			
+					.prepareStatement("DELETE FROM ActorMovie WHERE actorId = ? and movieId = ?");
 			deleteAllActorMoviesStmt = connection
 					.prepareStatement("DELETE FROM ActorMovie");
 			getAllActorMoviesStmt = connection
@@ -80,16 +80,16 @@ public class ActorMovieManager {
 	public ActorMovie getActorMovie(long actorId, long movieId) {
 		ActorMovie actorMovie = new ActorMovie();
 
-		try {			
+		try {
 			getActorMovieStmt.setLong(1, actorId);
 			getActorMovieStmt.setLong(2, movieId);
 			ResultSet rs = getActorMovieStmt.executeQuery();
-									
+
 			boolean found = rs.next();
-						
-			if( !found ) {
+
+			if (!found) {
 				return null;
-			} else {			
+			} else {
 				actorMovie.setActorId(rs.getInt("actorId"));
 				actorMovie.setMovieId(rs.getInt("movieId"));
 
@@ -103,9 +103,9 @@ public class ActorMovieManager {
 				e1.printStackTrace();
 			}
 		}
-		return actorMovie;		
+		return actorMovie;
 	}
-	
+
 	void deleteAllActorMovies() {
 		try {
 			deleteAllActorMoviesStmt.executeUpdate();
@@ -119,15 +119,15 @@ public class ActorMovieManager {
 			}
 		}
 	}
-	
+
 	public int addActorMovie(ActorMovie actorMovie) {
 		int count = 0;
 		try {
 			addActorMovieStmt.setLong(1, actorMovie.getActorId());
 			addActorMovieStmt.setLong(2, actorMovie.getMovieId());
-	
-		count = addActorMovieStmt.executeUpdate();
-		connection.commit();
+
+			count = addActorMovieStmt.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -138,15 +138,15 @@ public class ActorMovieManager {
 		}
 		return count;
 	}
-	
+
 	public int deleteActorMovie(ActorMovie actorMovie) {
 		int count = 0;
 		try {
 			deleteActorMovieStmt.setLong(1, actorMovie.getActorId());
 			deleteActorMovieStmt.setLong(2, actorMovie.getMovieId());
-		
-		count = deleteActorMovieStmt.executeUpdate();
-		connection.commit();
+
+			count = deleteActorMovieStmt.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -157,8 +157,8 @@ public class ActorMovieManager {
 		}
 		return count;
 	}
-	
-	public List<ActorMovie> getActorsInMovie(long movieId) {		
+
+	public List<ActorMovie> getActorsInMovie(long movieId) {
 		List<ActorMovie> actorMovies = new ArrayList<ActorMovie>();
 
 		try {
@@ -231,5 +231,5 @@ public class ActorMovieManager {
 		}
 		return actorMovies;
 	}
-	
+
 }
