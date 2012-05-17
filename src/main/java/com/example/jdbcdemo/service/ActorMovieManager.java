@@ -34,7 +34,7 @@ public class ActorMovieManager {
 		try {
 			connection = DriverManager.getConnection(url);
 			
-			//connection.setAutoCommit(false);
+			connection.setAutoCommit(false);
 			
 			statement = connection.createStatement();
 
@@ -94,8 +94,14 @@ public class ActorMovieManager {
 				actorMovie.setMovieId(rs.getInt("movieId"));
 
 			}
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return actorMovie;		
 	}
@@ -103,8 +109,14 @@ public class ActorMovieManager {
 	void deleteAllActorMovies() {
 		try {
 			deleteAllActorMoviesStmt.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -115,9 +127,14 @@ public class ActorMovieManager {
 			addActorMovieStmt.setLong(2, actorMovie.getMovieId());
 	
 		count = addActorMovieStmt.executeUpdate();
-
+		connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return count;
 	}
@@ -129,9 +146,14 @@ public class ActorMovieManager {
 			deleteActorMovieStmt.setLong(2, actorMovie.getMovieId());
 		
 		count = deleteActorMovieStmt.executeUpdate();
-
+		connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return count;
 	}
@@ -149,9 +171,14 @@ public class ActorMovieManager {
 				p.setMovieId(rs.getLong("movieId"));
 				actorMovies.add(p);
 			}
-
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return actorMovies;
 	}
@@ -169,9 +196,14 @@ public class ActorMovieManager {
 				p.setMovieId(rs.getLong("movieId"));
 				actorMovies.add(p);
 			}
-
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return actorMovies;
 	}
@@ -188,9 +220,14 @@ public class ActorMovieManager {
 				p.setMovieId(rs.getLong("movieId"));
 				actorMovies.add(p);
 			}
-
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return actorMovies;
 	}
