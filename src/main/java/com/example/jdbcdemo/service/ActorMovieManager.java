@@ -33,6 +33,9 @@ public class ActorMovieManager {
 	public ActorMovieManager() {
 		try {
 			connection = DriverManager.getConnection(url);
+			
+			//connection.setAutoCommit(false);
+			
 			statement = connection.createStatement();
 
 			ResultSet rs = connection.getMetaData().getTables(null, null, null,

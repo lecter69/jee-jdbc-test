@@ -31,6 +31,9 @@ public class MovieManager {
 	public MovieManager() {
 		try {
 			connection = DriverManager.getConnection(url);
+			
+			connection.setAutoCommit(false);
+			
 			statement = connection.createStatement();
 
 			ResultSet rs = connection.getMetaData().getTables(null, null, null,
@@ -60,7 +63,7 @@ public class MovieManager {
 					.prepareStatement("SELECT * FROM Movie");
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace();			
 		}
 	}
 
@@ -68,15 +71,17 @@ public class MovieManager {
 		return connection;
 	}
 
-	void deleteAllMovies() {
+	void deleteAllMovies() throws SQLException {
 		try {
 			deleteAllMoviesStmt.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}
 	}
 	
-	public int updateMovie(Movie movie, long id) {
+	public int updateMovie(Movie movie, long id) throws SQLException {
 		int count = 0;
 		try {
 			updateMovieStmt.setString(1, movie.getName());
@@ -86,15 +91,16 @@ public class MovieManager {
 			updateMovieStmt.setLong(5, id);
 			
 
-		count = updateMovieStmt.executeUpdate();
-
+			count = updateMovieStmt.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}
 		return count;
 	}
 
-	public int addMovie(Movie movie) {
+	public int addMovie(Movie movie) throws SQLException {
 		int count = 0;
 		try {
 			addMovieStmt.setString(1, movie.getName());
@@ -104,27 +110,29 @@ public class MovieManager {
 			
 
 		count = addMovieStmt.executeUpdate();
-
+		connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}
 		return count;
 	}
 	
-	public int deleteMovie(Movie movie) {
+	public int deleteMovie(Movie movie) throws SQLException {
 		int count = 0;
 		try {
 			deleteMovieStmt.setLong(1, movie.getId());
 		
 		count = deleteMovieStmt.executeUpdate();
-
+		connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}
 		return count;
 	}
 	
-	public Movie getMovie(long id) {
+	public Movie getMovie(long id) throws SQLException {
 		Movie movie = new Movie();
 
 		try {			
@@ -142,13 +150,15 @@ public class MovieManager {
 				movie.setGenre(rs.getString("genre"));
 				movie.setTime(rs.getInt("time"));
 			}
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}
 		return movie;		
 	}
 
-	public List<Movie> getAllMovies() {
+	public List<Movie> getAllMovies() throws SQLException {
 		List<Movie> movies = new ArrayList<Movie>();
 
 		try {
@@ -163,9 +173,10 @@ public class MovieManager {
 				p.setTime(rs.getInt("time"));
 				movies.add(p);
 			}
-
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}
 		return movies;
 	}
