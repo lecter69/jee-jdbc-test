@@ -121,8 +121,7 @@ public class ActorManagerTest {
 
 		try {
 			Actor actor1 = new Actor(FIRSTNAME_1, LASTNAME_1);
-			Actor actor2 = new Actor(FIRSTNAME_1 + FIRSTNAME_1, LASTNAME_1
-					+ LASTNAME_1);
+			Actor actor2 = new Actor(FIRSTNAME_1 + FIRSTNAME_1, LASTNAME_1 + LASTNAME_1);
 
 			actorManager.deleteAllActors();
 			assertEquals(1, actorManager.addActor(actor1));
@@ -132,12 +131,19 @@ public class ActorManagerTest {
 
 			assertEquals(2, actors.size());
 
-			assertEquals(FIRSTNAME_1, actors.get(0).getFirstName());
-			assertEquals(LASTNAME_1, actors.get(0).getLastName());
-
-			assertEquals(FIRSTNAME_1 + FIRSTNAME_1, actors.get(1)
-					.getFirstName());
-			assertEquals(LASTNAME_1 + LASTNAME_1, actors.get(1).getLastName());
+			if (actors.get(0).getFirstName().equals(FIRSTNAME_1)) {
+				assertEquals(FIRSTNAME_1, actors.get(0).getFirstName());
+				assertEquals(LASTNAME_1, actors.get(0).getLastName());
+	
+				assertEquals(FIRSTNAME_1 + FIRSTNAME_1, actors.get(1).getFirstName());
+				assertEquals(LASTNAME_1 + LASTNAME_1, actors.get(1).getLastName());
+			} else {
+				assertEquals(FIRSTNAME_1, actors.get(1).getFirstName());
+				assertEquals(LASTNAME_1, actors.get(1).getLastName());
+	
+				assertEquals(FIRSTNAME_1 + FIRSTNAME_1, actors.get(0).getFirstName());
+				assertEquals(LASTNAME_1 + LASTNAME_1, actors.get(0).getLastName());
+			}
 
 			actorManager.deleteAllActors();
 		} catch (SQLException e) {
@@ -150,8 +156,7 @@ public class ActorManagerTest {
 
 		try {
 			Actor actor1 = new Actor(FIRSTNAME_1, LASTNAME_1);
-			Actor actor2 = new Actor(FIRSTNAME_1 + FIRSTNAME_1, LASTNAME_1
-					+ LASTNAME_1);
+			Actor actor2 = new Actor(FIRSTNAME_1 + FIRSTNAME_1, LASTNAME_1 + LASTNAME_1);
 
 			actorManager.deleteAllActors();
 			assertEquals(1, actorManager.addActor(actor1));

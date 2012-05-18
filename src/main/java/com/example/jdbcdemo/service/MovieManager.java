@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.jdbcdemo.domain.ActorMovie;
 import com.example.jdbcdemo.domain.Movie;
 
 public class MovieManager {
@@ -31,10 +32,9 @@ public class MovieManager {
 	public MovieManager() {
 		try {
 			connection = DriverManager.getConnection(url);
-
-			connection.setAutoCommit(false);
-
+		
 			statement = connection.createStatement();
+					
 
 			ResultSet rs = connection.getMetaData().getTables(null, null, null,
 					null);
@@ -73,17 +73,21 @@ public class MovieManager {
 
 	void deleteAllMovies() throws SQLException {
 		try {
+			connection.setAutoCommit(false);
 			deleteAllMoviesStmt.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
 		}
 	}
 
 	public int updateMovie(Movie movie, long id) throws SQLException {
 		int count = 0;
 		try {
+			connection.setAutoCommit(false);
 			updateMovieStmt.setString(1, movie.getName());
 			updateMovieStmt.setInt(2, movie.getYear());
 			updateMovieStmt.setString(3, movie.getGenre());
@@ -95,6 +99,8 @@ public class MovieManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
 		}
 		return count;
 	}
@@ -102,6 +108,7 @@ public class MovieManager {
 	public int addMovie(Movie movie) throws SQLException {
 		int count = 0;
 		try {
+			connection.setAutoCommit(false);
 			addMovieStmt.setString(1, movie.getName());
 			addMovieStmt.setInt(2, movie.getYear());
 			addMovieStmt.setString(3, movie.getGenre());
@@ -112,6 +119,8 @@ public class MovieManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
 		}
 		return count;
 	}
@@ -119,13 +128,19 @@ public class MovieManager {
 	public int deleteMovie(Movie movie) throws SQLException {
 		int count = 0;
 		try {
+			connection.setAutoCommit(false);
 			deleteMovieStmt.setLong(1, movie.getId());
-
 			count = deleteMovieStmt.executeUpdate();
+			
+			ActorMovieManager actorMovieManager = new ActorMovieManager();
+			actorMovieManager.deleteWhereMovie(movie.getId());
+			
 			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
 		}
 		return count;
 	}
@@ -134,6 +149,7 @@ public class MovieManager {
 		Movie movie = new Movie();
 
 		try {
+			connection.setAutoCommit(false);
 			getMovieStmt.setLong(1, id);
 			ResultSet rs = getMovieStmt.executeQuery();
 
@@ -152,6 +168,8 @@ public class MovieManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
 		}
 		return movie;
 	}
@@ -160,6 +178,7 @@ public class MovieManager {
 		List<Movie> movies = new ArrayList<Movie>();
 
 		try {
+			connection.setAutoCommit(false);
 			ResultSet rs = getAllMoviesStmt.executeQuery();
 
 			while (rs.next()) {
@@ -175,6 +194,8 @@ public class MovieManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
 		}
 		return movies;
 	}

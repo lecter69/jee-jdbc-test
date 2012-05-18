@@ -27,6 +27,8 @@ public class ActorMovieManager {
 	private PreparedStatement getActorMovieStmt;
 	private PreparedStatement deleteAllActorMoviesStmt;
 	private PreparedStatement getAllActorMoviesStmt;
+	private PreparedStatement deleteWhereActor;
+	private PreparedStatement deleteWhereMovie;
 
 	private Statement statement;
 
@@ -67,6 +69,8 @@ public class ActorMovieManager {
 					.prepareStatement("DELETE FROM ActorMovie");
 			getAllActorMoviesStmt = connection
 					.prepareStatement("SELECT * FROM ActorMovie");
+			deleteWhereMovie = connection
+					.prepareStatement("DELETE FROM ActorMovie WHERE movieId = ?");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -146,6 +150,23 @@ public class ActorMovieManager {
 			deleteActorMovieStmt.setLong(2, actorMovie.getMovieId());
 
 			count = deleteActorMovieStmt.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return count;
+	}
+	
+	public int deleteWhereMovie(long movieId) {
+		int count = 0;
+		try {
+			deleteWhereMovie.setLong(1, movieId);
+			count = deleteWhereMovie.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();

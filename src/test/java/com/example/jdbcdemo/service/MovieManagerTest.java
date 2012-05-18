@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.junit.Test;
 
+import com.example.jdbcdemo.domain.ActorMovie;
 import com.example.jdbcdemo.domain.Movie;
 
 public class MovieManagerTest {
@@ -51,7 +52,12 @@ public class MovieManagerTest {
 	public void checkDeleteMovie() {
 		try {
 			Movie movie = new Movie(NAME_1, YEAR_1, GENRE_1, TIME_1);
-
+			
+			ActorMovie actorMovie = new ActorMovie(0,movie.getId());
+			ActorMovieManager actorMovieManager = new ActorMovieManager();			
+			actorMovieManager.deleteAllActorMovies();
+			assertEquals(1, actorMovieManager.addActorMovie(actorMovie));
+			
 			movieManager.deleteAllMovies();
 			assertEquals(1, movieManager.addMovie(movie));
 
@@ -135,15 +141,27 @@ public class MovieManagerTest {
 
 			assertEquals(2, movies.size());
 
-			assertEquals(NAME_1, movies.get(0).getName());
-			assertEquals(YEAR_1, movies.get(0).getYear());
-			assertEquals(GENRE_1, movies.get(0).getGenre());
-			assertEquals(TIME_1, movies.get(0).getTime());
+			if (movies.get(0).getName().equals(NAME_1)) {
+				assertEquals(NAME_1, movies.get(0).getName());
+				assertEquals(YEAR_1, movies.get(0).getYear());
+				assertEquals(GENRE_1, movies.get(0).getGenre());
+				assertEquals(TIME_1, movies.get(0).getTime());
+	
+				assertEquals(NAME_1 + NAME_1, movies.get(1).getName());
+				assertEquals(YEAR_1 + YEAR_1, movies.get(1).getYear());
+				assertEquals(GENRE_1 + GENRE_1, movies.get(1).getGenre());
+				assertEquals(TIME_1 + TIME_1, movies.get(1).getTime());
+			} else {
+				assertEquals(NAME_1, movies.get(1).getName());
+				assertEquals(YEAR_1, movies.get(1).getYear());
+				assertEquals(GENRE_1, movies.get(1).getGenre());
+				assertEquals(TIME_1, movies.get(1).getTime());
 
-			assertEquals(NAME_1 + NAME_1, movies.get(1).getName());
-			assertEquals(YEAR_1 + YEAR_1, movies.get(1).getYear());
-			assertEquals(GENRE_1 + GENRE_1, movies.get(1).getGenre());
-			assertEquals(TIME_1 + TIME_1, movies.get(1).getTime());
+				assertEquals(NAME_1 + NAME_1, movies.get(0).getName());
+				assertEquals(YEAR_1 + YEAR_1, movies.get(0).getYear());
+				assertEquals(GENRE_1 + GENRE_1, movies.get(0).getGenre());
+				assertEquals(TIME_1 + TIME_1, movies.get(0).getTime());
+			}
 
 			movieManager.deleteAllMovies();
 		} catch (SQLException e) {
