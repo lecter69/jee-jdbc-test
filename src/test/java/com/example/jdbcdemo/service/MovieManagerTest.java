@@ -171,6 +171,7 @@ public class MovieManagerTest {
 
 	@Test
 	public void checkUpdateMovie() {
+		// można by dodać więcej rekordów i sprawdzić czy aktualizuje ten jeden konkretny!
 		try {
 			Movie movie1 = new Movie(NAME_1, YEAR_1, GENRE_1, TIME_1);
 			Movie movie2 = new Movie(NAME_1 + NAME_1, YEAR_1 + YEAR_1, GENRE_1
